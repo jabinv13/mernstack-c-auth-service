@@ -79,6 +79,28 @@ describe("POST /tenants", () => {
             // expect(tenants[0].name).toBe(tenantData.name);
             // expect(tenants[0].address).toBe(tenantData.address);
         });
+        it("should return a 403 if user is not an admin", async () => {
+            const tenantData = {
+                name: "Tenant name",
+                address: "Tenant address",
+            };
+
+            const managerToken = jwks.token({
+                sub: "1",
+                role: Roles.MANAGER,
+            });
+            const response = await request(app)
+                .post("/tenants")
+                .send(tenantData)
+                .set("Cookie", [`accessToken=${managerToken}`]);
+            expect(response.statusCode).toBe(403);
+
+            const tenantRepository = connection.getRepository(Tenant);
+            const tenants = await tenantRepository.find();
+            expect(tenants).toHaveLength(0);
+            // expect(tenants[0].name).toBe(tenantData.name);
+            // expect(tenants[0].address).toBe(tenantData.address);
+        });
     });
 
     describe("Fields are missing", () => {});
