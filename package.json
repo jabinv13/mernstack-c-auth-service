@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=dev nodemon -L src/server.ts",
+        "build":"tsc",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format:check": "prettier . --check",
@@ -16,7 +17,7 @@
         "migration:run": "typeorm-ts-node-commonjs migration:run",
         "migration:create": "typeorm-ts-node-commonjs migration:create"
     },
-    "author": "jabin",
+"author": "jabin",
     "license": "ISC",
     "devDependencies": {
         "@types/bcrypt": "^5.0.2",
