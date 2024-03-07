@@ -2,7 +2,7 @@ import { UserService } from "../services/UserService";
 import { Logger } from "winston";
 import { CreateUserRequest, UpdateUserRequest } from "../types";
 import { NextFunction, Request, Response } from "express";
-import { Roles } from "../constants";
+
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
 
@@ -12,7 +12,8 @@ export class UserController {
         private logger: Logger,
     ) {}
     async create(req: CreateUserRequest, res: Response, next: NextFunction) {
-        const { firstName, lastName, email, password } = req.body;
+        const { firstName, lastName, email, password, tenantId, role } =
+            req.body;
 
         try {
             const user = await this.userService.create({
@@ -20,7 +21,8 @@ export class UserController {
                 lastName,
                 email,
                 password,
-                role: Roles.MANAGER,
+                role,
+                tenantId,
             });
 
             res.status(201).json({ id: user.id });
