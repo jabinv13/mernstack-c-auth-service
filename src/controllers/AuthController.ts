@@ -69,6 +69,8 @@ export class AuthController {
                 id: String(newRefreshToken.id),
             });
 
+            //testing
+
             res.cookie("accessToken", accessToken, {
                 domain: "localhost",
                 sameSite: "strict",
