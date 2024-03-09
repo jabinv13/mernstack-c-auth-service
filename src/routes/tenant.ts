@@ -1,4 +1,4 @@
-import express, { NextFunction, Response } from "express";
+import express, { NextFunction, RequestHandler, Response } from "express";
 import { TenantController } from "../controllers/TenantController";
 import { TenantService } from "../services/TenantService";
 import logger from "../config/logger";
@@ -15,30 +15,37 @@ const tenantRepository = AppDataSource.getRepository(Tenant);
 const tenantService = new TenantService(tenantRepository);
 const tenantController = new TenantController(tenantService, logger);
 
-router.post(
-    "/",
-    authenticate,
-    canAccess([Roles.ADMIN]),
-    async (req: CreateTenantRequest, res: Response, next: NextFunction) => {
-        await tenantController.create(req, res, next);
-    },
-);
+router.post("/", authenticate, canAccess([Roles.ADMIN]), (async (
+    req: CreateTenantRequest,
+    res: Response,
+    next: NextFunction,
+) => {
+    await tenantController.create(req, res, next);
+}) as RequestHandler);
 
-router.patch(
-    "/:id",
-    authenticate,
-    canAccess([Roles.ADMIN]),
-    async (req: CreateTenantRequest, res: Response, next: NextFunction) => {
-        await tenantController.update(req, res, next);
-    },
+router.patch("/:id", authenticate, canAccess([Roles.ADMIN]), (async (
+    req: CreateTenantRequest,
+    res: Response,
+    next: NextFunction,
+) => {
+    await tenantController.update(req, res, next);
+}) as RequestHandler);
+router.get(
+    "/",
+    (async (req, res, next) =>
+        await tenantController.getAll(req, res, next)) as RequestHandler,
 );
-router.get("/", (req, res, next) => tenantController.getAll(req, res, next));
-router.get("/:id", (req, res, next) => tenantController.getOne(req, res, next));
+router.get(
+    "/:id",
+    (async (req, res, next) =>
+        await tenantController.getOne(req, res, next)) as RequestHandler,
+);
 router.delete(
     "/:id",
     authenticate,
     canAccess([Roles.ADMIN]),
-    (req, res, next) => tenantController.destroy(req, res, next),
+    (async (req, res, next) =>
+        await tenantController.destroy(req, res, next)) as RequestHandler,
 );
 
 export default router;

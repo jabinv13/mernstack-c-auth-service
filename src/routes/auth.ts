@@ -1,4 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from "express";
 import { AuthController } from "../controllers/AuthController";
 import { UserService } from "../services/UserService";
 import { AppDataSource } from "../config/data-source";
@@ -33,32 +38,43 @@ const authController = new AuthController(
 router.post(
     "/register",
     registerValidator,
-    (req: Request, res: Response, next: NextFunction) =>
-        authController.register(req, res, next),
+    (async (req: Request, res: Response, next: NextFunction) =>
+        await authController.register(req, res, next)) as RequestHandler,
 );
 
 router.post(
     "/login",
     loginvalidator,
-    (req: Request, res: Response, next: NextFunction) =>
-        authController.login(req, res, next),
+    (async (req: Request, res: Response, next: NextFunction) =>
+        await authController.login(req, res, next)) as RequestHandler,
 );
 
-router.get("/self", authenticate, (req: Request, res: Response) =>
-    authController.self(req as AuthRequest, res),
+router.get(
+    "/self",
+    authenticate,
+    (async (req: Request, res: Response) =>
+        await authController.self(req as AuthRequest, res)) as RequestHandler,
 );
 router.post(
     "/refresh",
     validateRefreshToken,
-    (req: Request, res: Response, next: NextFunction) =>
-        authController.refresh(req as AuthRequest, res, next),
+    (async (req: Request, res: Response, next: NextFunction) =>
+        await authController.refresh(
+            req as AuthRequest,
+            res,
+            next,
+        )) as RequestHandler,
 );
 
 router.post(
     "/logout",
     parseRefreshToken,
-    (req: Request, res: Response, next: NextFunction) =>
-        authController.logout(req as AuthRequest, res, next),
+    (async (req: Request, res: Response, next: NextFunction) =>
+        await authController.logout(
+            req as AuthRequest,
+            res,
+            next,
+        )) as RequestHandler,
 );
 
 export default router;

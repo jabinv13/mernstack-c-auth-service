@@ -1,4 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from "express";
 
 import authenticate from "../middleware/authenticate";
 import { canAccess } from "../middleware/canAccess";
@@ -22,9 +27,9 @@ router.post(
     authenticate,
     canAccess([Roles.ADMIN]),
     createUserValidator,
-    async (req: Request, res: Response, next: NextFunction) => {
+    (async (req: Request, res: Response, next: NextFunction) => {
         await userController.create(req, res, next);
-    },
+    }) as RequestHandler,
 );
 
 router.patch(
@@ -32,23 +37,32 @@ router.patch(
     authenticate,
     canAccess([Roles.ADMIN]),
     updateUserValidator,
-    (req: UpdateUserRequest, res: Response, next: NextFunction) =>
-        userController.update(req, res, next),
+    (async (req: UpdateUserRequest, res: Response, next: NextFunction) =>
+        await userController.update(req, res, next)) as RequestHandler,
 );
 
-router.get("/", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
-    userController.getAll(req, res, next),
+router.get(
+    "/",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    (async (req, res, next) =>
+        await userController.getAll(req, res, next)) as RequestHandler,
 );
 
-router.get("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
-    userController.getOne(req, res, next),
+router.get(
+    "/:id",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    (async (req, res, next) =>
+        await userController.getOne(req, res, next)) as RequestHandler,
 );
 
 router.delete(
     "/:id",
     authenticate,
     canAccess([Roles.ADMIN]),
-    (req, res, next) => userController.destroy(req, res, next),
+    (async (req, res, next) =>
+        await userController.destroy(req, res, next)) as RequestHandler,
 );
 
 export default router;
