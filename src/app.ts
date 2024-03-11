@@ -20,7 +20,7 @@ app.get("/", async (req, res) => {
 app.use(
     cors({
         //todo:move to .env file
-        origin: ["http://localhost:5174"],
+        origin: ["http://localhost:5173"],
         credentials: true,
     }),
 );
