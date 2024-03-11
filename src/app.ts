@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import tenantRouter from "./routes/tenant";
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
+import cors from "cors";
 
 const app = express();
 
@@ -16,7 +17,13 @@ app.use(express.json());
 app.get("/", async (req, res) => {
     res.send("welocme to auth-service");
 });
-
+app.use(
+    cors({
+        //todo:move to .env file
+        origin: ["http://localhost:5174"],
+        credentials: true,
+    }),
+);
 app.use("/auth", authRouter);
 app.use("/tenants", tenantRouter);
 app.use("/users", userRouter);
