@@ -16,6 +16,7 @@ import { AppDataSource } from "../config/data-source";
 import createUserValidator from "../validators/create-user-validator";
 import updateUserValidator from "../validators/update-user-validator";
 import { UpdateUserRequest } from "../types";
+import listUsersValidator from "../validators/list-users-validator";
 
 const router = express.Router();
 const userRepository = AppDataSource.getRepository(User);
@@ -45,6 +46,7 @@ router.get(
     "/",
     authenticate,
     canAccess([Roles.ADMIN]),
+    listUsersValidator,
     (async (req, res, next) =>
         await userController.getAll(req, res, next)) as RequestHandler,
 );
