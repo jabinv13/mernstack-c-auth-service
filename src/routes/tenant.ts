@@ -8,6 +8,7 @@ import { CreateTenantRequest } from "../types";
 import authenticate from "../middleware/authenticate";
 import { canAccess } from "../middleware/canAccess";
 import { Roles } from "../constants";
+import listUsersValidator from "../validators/list-users-validator";
 
 const router = express.Router();
 
@@ -32,6 +33,7 @@ router.patch("/:id", authenticate, canAccess([Roles.ADMIN]), (async (
 }) as RequestHandler);
 router.get(
     "/",
+    listUsersValidator,
     (async (req, res, next) =>
         await tenantController.getAll(req, res, next)) as RequestHandler,
 );
