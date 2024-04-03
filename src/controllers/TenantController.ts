@@ -31,15 +31,20 @@ export class TenantController {
     async update(req: CreateTenantRequest, res: Response, next: NextFunction) {
         const result = validationResult(req);
         if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
+            // Validation
+            const result = validationResult(req);
+            if (!result.isEmpty()) {
+                return next(
+                    createHttpError(400, result.array()[0].msg as string),
+                );
+            }
         }
         const { name, address } = req.body;
         const tenantId = req.params.id;
         this.logger.debug("Request for update a tenant", req.body);
 
         if (isNaN(Number(tenantId))) {
-            next(createHttpError(400, "Invalid url param."));
-            return;
+            return next(createHttpError(400, result.array()[0].msg as string));
         }
 
         try {
