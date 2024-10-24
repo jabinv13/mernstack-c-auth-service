@@ -7,27 +7,20 @@ import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 import cors from "cors";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
+import { Config } from "./config";
 
 const app = express();
+
+const ALLOWED_DOMAINS = [Config.CLIENT_UI_DOMAIN, Config.ADMIN_UI_DOMAIN];
 
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(express.json());
 
+app.use(cors({ origin: ALLOWED_DOMAINS as string[] }));
 app.get("/", async (req, res) => {
     res.send("welocme to auth-service");
 });
-app.use(
-    cors({
-        //todo:move to .env file
-        origin: [
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "http://localhost:8000",
-        ],
-        credentials: true,
-    }),
-);
 app.use("/auth", authRouter);
 app.use("/tenants", tenantRouter);
 app.use("/users", userRouter);
