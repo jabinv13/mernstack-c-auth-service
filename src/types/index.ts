@@ -23,8 +23,11 @@ export interface AuthRequest extends Request {
     auth: {
         sub: string;
         role: string;
-        id: number;
+        id?: string;
         tenant: string;
+        firstName: string;
+        lastName: string;
+        email: string;
     };
 }
 export interface JwtPayloadTen extends JwtPayload {
